@@ -1,0 +1,7 @@
+{
+    "git.ignoreLimitWarning": true,
+    "workbench.colorTheme": "Panda Syntax",
+    "workbench.preferredHighContrastLightColorTheme": "Winter is Coming (Dark Black)",
+    "workbench.preferredLightColorTheme": "Panda Syntax",
+    "vim.cursorStylePerMode.visualblock": "line"
+}
