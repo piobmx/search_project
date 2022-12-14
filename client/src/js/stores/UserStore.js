@@ -6,6 +6,7 @@ class UserStore {
             loading: true,
             isLoggedIn: false,
             username: '',
+            topic: '',
 
             getIsLoggedIn() {
                 return this.isLoggedIn

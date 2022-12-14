@@ -26,6 +26,8 @@ const Header = function ({
     isManager,
     username,
     sessionId,
+    searchTopic,
+    showSearchHints,
 }) {
     return (
         <div className="SearchHeader">
@@ -43,18 +45,20 @@ const Header = function ({
                     query={query}
                     changeHandler={queryChangeHandler}
                     showSuggestionsHandler={showSuggestionsHandler}
+                    showSearchHints={showSearchHints}
                 />
                 <SuggestionsContainer
                     clickSuggestionHandler={clickSuggestionHandler}
                     hideSuggestionsHandler={hideSuggestionsHandler}
                     showSuggestions={showSuggestions}
                 />
+{/* 
                 <SearchVerticals
                     query={query}
                     activeVertical={vertical}
                     changeHandler={verticalChangeHandler}
                     provider={provider}
-                />
+                /> */}
             </form>
 
             {showAccountInfo && (
@@ -64,6 +68,7 @@ const Header = function ({
                     username={username}
                     isManager={isManager}
                     sessionId={sessionId}
+                    searchTopic={searchTopic}
                 />
             )}
 

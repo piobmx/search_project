@@ -58,6 +58,8 @@ export default class SearchHeaderContainer extends React.Component {
                 isManager={this.props.isManager}
                 username={UserStore.getUsername()}
                 sessionId={AccountStore.getSessionId()}
+                searchTopic={SearchStore.getTopic()}
+                showSearchHints={this.props.showSearchHints}
             />
         );
     }

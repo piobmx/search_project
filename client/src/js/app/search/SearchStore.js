@@ -51,6 +51,7 @@ const _setVariant = function () {
             : variant === "S1-Hard"
             ? "unbookmarkedOnly"
             : "unbookmarkedSoft";
+
 };
 
 /*
@@ -77,6 +78,7 @@ const _setState = function () {
         activeUrl: "",
         activeDoctext: "",
         ranking: "random",
+        topic: '',
     };
     _setVariant();
 };
@@ -151,6 +153,13 @@ const SearchStore = Object.assign(EventEmitter.prototype, {
     },
 
     ////
+    getTopic() {
+        return state.topic
+    },
+    setTopic(newTopic) {
+        state.topic = newTopic
+        this.emitChange();
+    },
 
     getActiveUrl() {
         return state.activeUrl;

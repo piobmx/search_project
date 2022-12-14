@@ -21,6 +21,9 @@ const AccountStore = Object.assign(EventEmitter.prototype, {
     getGroupId() {
         return state.groupId;
     },
+    getUserTopic() {
+        return state.topic;
+    },
     getTask() {
         return state.task;
     },
@@ -34,6 +37,11 @@ const AccountStore = Object.assign(EventEmitter.prototype, {
     // WARNING: using the setter methods below violates flux architecture, and will not cause components to be updated
     // If changes need to be propagated from this store, event dispatch methods need to be added, and actions with a
     // dispatcher need to be used instead of setter methods.
+    setUserTopic(topic) {
+        state.topic = topic;
+        localStorage.setItem("user-topic", topic);
+        console.log('userID SET');
+    },
     setUserId(userId) {
         state.userId = userId;
         localStorage.setItem("user-id", userId);

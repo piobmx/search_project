@@ -11,6 +11,7 @@ const AccountInfo = function ({
     sessionId,
     username,
     isManager,
+    searchTopic,
 }) {
     console.log("ACCOUNTINFO:", username);
     return (
@@ -36,6 +37,8 @@ const AccountInfo = function ({
                 Session ID: {sessionId ? sessionId : "Session ID Not Found."}
                 <br />
                 Username: {username ? username : "User not log in" }
+                <br />
+                Assigned Topic: <b>{searchTopic ? searchTopic : "Topic not assigned"}</b>
             </p>
         </div>
     );

@@ -23,7 +23,8 @@ exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, 
     
     
 
-    const resultPerPageCount = (vertical === 'images' || vertical === 'videos') ? 12 : 10;
+    // const resultPerPageCount = (vertical === 'images' || vertical === 'videos') ? 12 : 10;
+    const resultPerPageCount = 12
     const bookmarks = await bookmark.getBookmarks(sessionId);
     const excludes = await bookmark.getBookmarks(sessionId, true);
     const userBookmarks = await bookmark.getUserBookmarks(sessionId, userId);

@@ -3,7 +3,7 @@ import React from "react";
 const Pagination = ({postsPerPage, totalPosts, paginate, currentPage}) => {
     const pageNumbers = [];
 
-    let n = 10;
+    let n = 12;
     let l = currentPage - n/2;
     let r = currentPage + n/2 - 1;
     let max = Math.ceil(totalPosts / postsPerPage);

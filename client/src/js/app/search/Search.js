@@ -13,6 +13,8 @@ import SearchResultsAggregationContainer from "./results/SearchResultsAggregatio
 import Chat from "./features/chat/Chat";
 import config from "../../config";
 import LoginStore from "../../stores/LoginStore";
+import UserStore from "../../stores/UserStore";
+import SearchStore from "./SearchStore";
 import "../static/logui.bundle.js";
 import "../static/driver.js";
 
@@ -22,6 +24,7 @@ class Search extends React.Component {
 
         this.state = {
             isManager: LoginStore.getAuth(),
+            searchTopic: SearchStore.getTopic(),
         };
 
         this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
@@ -49,12 +52,22 @@ class Search extends React.Component {
                 isManager: LoginStore.isManager,
             });
         });
+        // SearchStore.addChangeListener(this._onChangeTopic);
         console.log("Search", this.props);
         // document.addEventListener('visibilitychange', this.handleVisibilityChange);
     }
 
+    _onChangeTopic(event) {
+        const topic = event.target.value;
+        this.setState({
+            searchTopic: topic,
+        });
+        console.log("new topic to be set: ", topic);
+        SearchStore.setTopic(topic);
+    }
+
     render() {
-        console.log("rendering SEARCH2");
+        console.log("rendering SEARCH without 2");
         return (
             <div className="Search">
                 <SearchHeaderContainer
@@ -62,7 +75,38 @@ class Search extends React.Component {
                     statusbar={this.props.statusbar}
                     showAccountInfo={this.props.showAccountInfo}
                     isManager={this.state.isManager}
+                    showSearchHints={true}
                 />
+
+                {this.state.searchTopic === "" ? (
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "right",
+                            alignItems: "right",
+                            padding: "5px 30px 0px ",
+                        }}>
+                            (For testing) Please select a topic: 
+                        <select
+                            id="topicSelect"
+                            onChange={this._onChangeTopic.bind(this)}>
+                            <option key="n" value="Not assigned">
+                                None
+                            </option>
+                            <option key="a1" value="Atheism">
+                                Atheism
+                            </option>
+                            <option
+                                key="i2"
+                                value="Intellectual Property Right">
+                                Intellectial Property Right
+                            </option>
+                            <option key="s3" value="School Uniform">
+                                School Uniform
+                            </option>
+                        </select>
+                    </div>
+                ) : null}
 
                 <div className="Content">
                     <div className="Main">
@@ -108,6 +152,13 @@ class Search extends React.Component {
         }
     }
 }
+const styles = {
+    display: "flex",
+    alignItems: "left",
+    justifyContent: "left",
+    margin: "auto",
+};
+
 Search.propTypes = {
     onSwitchPage: PropTypes.func,
 };
