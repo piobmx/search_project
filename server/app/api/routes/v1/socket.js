@@ -4,12 +4,10 @@ const FeatureCtrl = require('../../controllers/socket/feature');
 const SessionCtrl = require('../../controllers/socket/session');
 
 module.exports = function(io) {
-    console.log("Inside eio")
     const gio = io.of('/session');
     gio.on('connection', (socket) => {
         // Register
         socket.on('register', async (data) => {
-            console.log('user connected: ' + data.userId);
             if (data.groupId) {
                 socket.sessionId = data.groupId;
                 socket.join(data.groupId);

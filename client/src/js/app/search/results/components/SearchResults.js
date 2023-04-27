@@ -7,12 +7,17 @@ import Loader from "react-loader";
 import SearchResultContainer from "../SearchResultContainer";
 import SearchResultsPagination from "./SearchResultsPagination";
 import CollapsedResultsButton from "./CollapsedSearchResults";
-import { Button } from "react-bootstrap";
+// import { Button } from "react-bootstrap";
 import $ from "jquery";
 import CenteredMessage from "../../../common/CenteredMessage";
 import Helpers from "../../../../utils/Helpers";
 
-const SearchResults = function ({
+const expandedTopic = {
+    ipr: `"intellectual property rights", "property right" or "intellectual right"`,
+    su: `"school uniform" or "uniform"`,
+    ath: `"atheism" or "atheist"`,
+};
+const SearchResults = function({
     searchState,
     progress,
     serpId,
@@ -30,14 +35,15 @@ const SearchResults = function ({
     isCollapsible,
     showCollapsedResults,
     hideCollapsedResults,
+    topic,
     showAllCollapsedResults,
     hideAllCollapsedResults,
 }) {
-    const getCollapsibleResultsLength = function () {
-        return results.filter((result) => isCollapsible(result)).length;
-    };
+    // const getCollapsibleResultsLength = function () {
+    //     return results.filter((result) => isCollapsible(result)).length;
+    // };
 
-    const resultsAreCollapsed = function (results) {
+    const resultsAreCollapsed = function(results) {
         let output = false;
         results.forEach((result) => {
             if (collapsed[Helpers.getId(result)]) {
@@ -60,15 +66,15 @@ const SearchResults = function ({
     }
 
     if (progress.resultsNotFound) {
+        const queryNotIncludesKeyword = `We have not found results for you! Please make sure your query includes ${expandedTopic[topic]}!`;
+
         return (
-            <CenteredMessage height="800px" style={style}>
-                <h3> Sorry! :`( </h3>
-                <h4>
-                    {" "}
-                    We have not found results for you! Try to shorten your
-                    query!{" "}
-                </h4>
-            </CenteredMessage>
+            <>
+                <CenteredMessage height="800px" style={style}>
+                    <h3> Sorry! :( </h3>
+                    <h4> {queryNotIncludesKeyword} </h4>
+                </CenteredMessage>
+            </>
         );
     }
 
@@ -83,7 +89,10 @@ const SearchResults = function ({
     }
 
     // Trick to remove last page from pagination;
-    $(".pagination").find("a").last().hide();
+    $(".pagination")
+        .find("a")
+        .last()
+        .hide();
 
     const pagination = (
         <SearchResultsPagination
@@ -148,6 +157,7 @@ const SearchResults = function ({
                             searchState={searchState}
                             serpId={serpId}
                             index={index}
+                            key={1}
                         />
                     );
                     list = list.concat(lastCollapsedResultsComponents);
@@ -194,12 +204,12 @@ const SearchResults = function ({
             />
         );
     }
-    const currentCollapsedResultsLength = Object.values(collapsed).filter(
-        (value) => value
-    ).length;
-    const allBookmarkedResultsHidden =
-        currentCollapsedResultsLength === getCollapsibleResultsLength();
-list
+    // const currentCollapsedResultsLength = Object.values(collapsed).filter(
+    //     (value) => value
+    // ).length;
+    // const allBookmarkedResultsHidden =
+    // currentCollapsedResultsLength === getCollapsibleResultsLength();
+
     return (
         <div>
             <div className="SearchResults" id="intro-search-results">

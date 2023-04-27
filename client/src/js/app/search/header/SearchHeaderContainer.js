@@ -30,7 +30,7 @@ export default class SearchHeaderContainer extends React.Component {
 
     componentDidMount() {
         SearchStore.addChangeListener(this.changeHandler);
-        console.log("getUSername:", UserStore.getUsername());
+        // console.log("getUSername:", UserStore.getUsername());
     }
     componentWillUnmount() {
         SearchStore.removeChangeListener(this.changeHandler);
@@ -59,7 +59,10 @@ export default class SearchHeaderContainer extends React.Component {
                 username={UserStore.getUsername()}
                 sessionId={AccountStore.getSessionId()}
                 searchTopic={SearchStore.getTopic()}
+                searchBias={SearchStore.getBias()}
+                userView={SearchStore.getUserView()}
                 showSearchHints={this.props.showSearchHints}
+                QID={UserStore.getQualtricsID()}
             />
         );
     }
@@ -80,14 +83,27 @@ export default class SearchHeaderContainer extends React.Component {
     }
 
     searchHandler() {
-        console.log("searchHandler");
+        // console.log("searchHandler");
         if (this.state.query.replace(/[^a-zA-Z]/g, "") === "") {
             return;
         }
+        const searchState = SearchStore.getSearchState()
+        const metaInfo = {
+            page: searchState.page,
+            query: searchState.query,
+            vertical: searchState.vertical,
+            topic: searchState.topic,
+            viewpoint: searchState.viewpoint,
+            biasType: searchState.biasType,
+            qid: UserStore.getQualtricsID(),
+            // query: broadcastSearchState.query
+        };
+        console.log('serachState,', metaInfo);
         log(LoggerEventTypes.SEARCH_QUERY, {
             query: this.state.query,
             vertical: this.state.searchState.vertical,
             session: localStorage.getItem("session-num") || 0,
+            ...metaInfo
         });
         this.hideSuggestionsHandler();
         SearchActions.search(

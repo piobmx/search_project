@@ -13,7 +13,7 @@ export default class Login extends React.Component {
 
     componentDidMount() {
         LoginStore.on("change", () => {
-            console.log("change...... ");
+            // console.log("change...... ");
             this.setState({
                 isManager: LoginStore.isManager,
             });
@@ -22,7 +22,7 @@ export default class Login extends React.Component {
     }
 
     render() {
-        console.log("isManager: " + this.state.isManager);
+        // console.log("isManager: " + this.state.isManager);
         if (this.state.isManager) {
             return (
                 <div>

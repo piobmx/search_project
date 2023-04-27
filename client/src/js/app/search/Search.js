@@ -1,59 +1,52 @@
 import "./Search.pcss";
 import React from "react";
 
-import { log } from "../../utils/Logger";
-import { LoggerEventTypes } from "../../utils/LoggerEventTypes";
+// import { log } from "../../utils/Logger";
+// import { LoggerEventTypes } from "../../utils/LoggerEventTypes";
 import PropTypes from "prop-types";
 import SearchHeaderContainer from "./header/SearchHeaderContainer";
 import SearchResultsContainer from "./results/SearchResultsContainer";
 import QueryHistoryContainer from "./features/queryhistory/QueryHistoryContainer";
-import BookmarkContainer from "./features/bookmark/BookmarkContainer";
-import NotepadContainer from "./features/notepad/NotepadContainer";
+// import BookmarkContainer from "./features/bookmark/BookmarkContainer";
+// import NotepadContainer from "./features/notepad/NotepadContainer";
 import SearchResultsAggregationContainer from "./results/SearchResultsAggregationContainer";
-import Chat from "./features/chat/Chat";
-import config from "../../config";
-import LoginStore from "../../stores/LoginStore";
-import UserStore from "../../stores/UserStore";
+// import Chat from "./features/chat/Chat";
+// import config from "../../config";
+// import LoginStore from "../../stores/LoginStore";
 import SearchStore from "./SearchStore";
-import "../static/logui.bundle.js";
-import "../static/driver.js";
 
 class Search extends React.Component {
     constructor(props) {
         super(props);
-
+        // console.log("propos", props);
         this.state = {
-            isManager: LoginStore.getAuth(),
+            // isManager: LoginStore.getAuth(),
+            isManager: false,
             searchTopic: SearchStore.getTopic(),
+            searchBias: SearchStore.getBias(),
+            userView: SearchStore.getUserView(),
         };
-
         this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     }
 
-    // componentDidMount() {
-    // }
-
-    // componentWillUnmount() {
-    //     if (this.props.lastSession && config.interface.chat && this.props.collaborative) {
-    //         const messages = document.querySelector(".chat-content").innerHTML;
-    //         log(LoggerEventTypes.CHAT_ARCHIVE, {
-    //             messages: messages
-    //         });
-
-    //         const element = document.querySelector("#conversejs");
-    //         element.parentElement.removeChild(element);
-    //     };
-    //     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-    // }
-
     componentDidMount() {
-        LoginStore.on("change", () => {
-            this.setState({
-                isManager: LoginStore.isManager,
-            });
+        const script = document.createElement("script");
+        script.src = "./static/llogui.bundle.js";
+        script.async = true;
+        document.body.appendChild(script);
+
+        window.addEventListener("beforeunload", (ev) => 
+        {  
+            ev.preventDefault();
+            return ev.returnValue = 'Are you sure you want to close this survey?';
         });
+        // LoginStore.on("change", () => {
+        //     this.setState({
+        //         isManager: LoginStore.isManager,
+        //     });
+        // });
         // SearchStore.addChangeListener(this._onChangeTopic);
-        console.log("Search", this.props);
+        // console.log("Search", this.props);
         // document.addEventListener('visibilitychange', this.handleVisibilityChange);
     }
 
@@ -62,12 +55,29 @@ class Search extends React.Component {
         this.setState({
             searchTopic: topic,
         });
-        console.log("new topic to be set: ", topic);
-        SearchStore.setTopic(topic);
+        // console.log("new topic to be set: ", topic);
+        SearchStore.setTopic(topic, true);
+    }
+
+    _onChangeBias(event) {
+        const bias = event.target.value;
+        this.setState({
+            searchBias: bias,
+        });
+        // console.log("new bias set:", bias);
+        SearchStore.setBias(bias, true);
+    }
+
+    _onChangeView(event) {
+        const view = event.target.value;
+        this.setState({
+            userView: view,
+        });
+        SearchStore.setUserView(view, true);
     }
 
     render() {
-        console.log("rendering SEARCH without 2");
+        // console.log("rendering SEARCH without 2");
         return (
             <div className="Search">
                 <SearchHeaderContainer
@@ -78,30 +88,86 @@ class Search extends React.Component {
                     showSearchHints={true}
                 />
 
-                {this.state.searchTopic === "" ? (
+                {process.env.DISPLAY === "development" ? (
                     <div
                         style={{
                             display: "flex",
                             justifyContent: "right",
                             alignItems: "right",
                             padding: "5px 30px 0px ",
-                        }}>
-                            (For testing) Please select a topic: 
+                        }}
+                    >
+                        (For testing) Please select a viewpoint:
                         <select
-                            id="topicSelect"
-                            onChange={this._onChangeTopic.bind(this)}>
-                            <option key="n" value="Not assigned">
+                            id="biasSelect"
+                            onChange={this._onChangeView.bind(this)}
+                        >
+                            <option key="n" value="na">
                                 None
                             </option>
-                            <option key="a1" value="Atheism">
+                            <option key="b1" value="vp0">
+                                Strongly Against {this.state.searchTopic}
+                            </option>
+                            <option key="b2" value="vp2">
+                                Strongly Favor {this.state.searchTopic}
+                            </option>
+                        </select>
+                    </div>
+                ) : null}
+
+                {process.env.DISPLAY === "development" ? (
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "right",
+                            alignItems: "right",
+                            padding: "5px 30px 0px ",
+                        }}
+                    >
+                        (For testing) Please select a bias condition:
+                        <select
+                            id="biasSelect"
+                            onChange={this._onChangeBias.bind(this)}
+                        >
+                            <option key="n" value="na">
+                                None
+                            </option>
+                            <option key="b1" value="balanced">
+                                Balanced
+                            </option>
+                            <option key="b2" value="biased">
+                                Biased
+                            </option>
+                        </select>
+                    </div>
+                ) : null}
+                {process.env.DISPLAY === "development" ? (
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "right",
+                            alignItems: "right",
+                            padding: "5px 30px 0px ",
+                        }}
+                    >
+                        (For testing) Please select a topic:
+                        <select
+                            id="topicSelect"
+                            onChange={this._onChangeTopic.bind(this)}
+                        >
+                            <option key="n" value="na">
+                                None
+                            </option>
+                            <option key="a1" value="ath">
                                 Atheism
                             </option>
                             <option
                                 key="i2"
-                                value="Intellectual Property Right">
+                                value="ipr"
+                            >
                                 Intellectial Property Right
                             </option>
-                            <option key="s3" value="School Uniform">
+                            <option key="s3" value="su">
                                 School Uniform
                             </option>
                         </select>
@@ -117,9 +183,13 @@ class Search extends React.Component {
 
                     <div className="Side">
                         <SearchResultsAggregationContainer />
-                        <QueryHistoryContainer
-                            collaborative={this.props.collaborative}
-                        />
+                        {process.env.DISPLAY === "development" ? (
+                            <QueryHistoryContainer
+                                collaborative={this.props.collaborative}
+                            />
+                        ) : (
+                            <></>
+                        )}
                         {/* <NotepadContainer /> */}
                         {/* <BookmarkContainer collaborative={this.props.collaborative}/> */}
                     </div>
@@ -132,16 +202,10 @@ class Search extends React.Component {
                 </div>
                 <div className="text-center">
                     <p className="Footer">
-                        About{" "}
-                        <a href="/about" target="_blank">
-                            SearchX
-                        </a>
-                        .
+                        About {/* <a href="/about" target="_blank"> */}
+                        SEPP.
                     </p>
                 </div>
-
-                {/* <script src="../static/logui.bundle.js"></script> */}
-                {/* <script src="../static/driver.js"></script> */}
             </div>
         );
     }
@@ -152,12 +216,6 @@ class Search extends React.Component {
         }
     }
 }
-const styles = {
-    display: "flex",
-    alignItems: "left",
-    justifyContent: "left",
-    margin: "auto",
-};
 
 Search.propTypes = {
     onSwitchPage: PropTypes.func,
@@ -165,7 +223,7 @@ Search.propTypes = {
 
 Search.defaultProps = {
     collaborative: true,
-    showAccountInfo: true,
+    showAccountInfo: process.env.DISPLAY === "development" ? true : false,
     firstSession: true,
     lastSession: true,
     onSwitchPage: () => {},

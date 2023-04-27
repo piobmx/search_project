@@ -12,8 +12,8 @@ exports.formatHit = function (hit) {
         id: hit._id,
         name: source['title'],
         source: source['url'],
-        text: source['snippet'],
-        viewpoint: source['viewpoint'],
+        text: source['new_snippet'],
+        viewpoint: source['pred_label'],
         //snippet: snippet
     };
 };

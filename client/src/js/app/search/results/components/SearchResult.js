@@ -2,16 +2,22 @@ import React, { useState } from "react";
 import Rating from "react-rating";
 
 import { Collapse } from "react-bootstrap";
-
+import SearchStore from "../../SearchStore";
 import config from "../../../../config";
 import Identicon from "identicon.js";
 import md5 from "md5";
-const stanceValue = {
-    0: "Against",
-    1: "Neutral",
-    2: "Favor",
+const predictionValueToColor = {
+    0: "#C395E4",
+    1: "#ABB3C6",
+    2: "#B0E0E6",
 };
-const SearchResult = function ({
+
+const expandedTopic = {
+    "ipr": "Intellectual Property Rights",
+    "su": "School Uniforms",
+    "ath": "Atheism",
+}
+const SearchResult = function({
     searchState,
     serpId,
     result,
@@ -82,7 +88,6 @@ const SearchResult = function ({
     const view = <ResultType {...props} />;
 
     const [LabelHover, setLabelHover] = useState(false);
-    const [mouseXY, setMouseXY] = useState([0, 0]);
     const handleMouseEnter = () => {
         setLabelHover(true);
         console.log("In LabelHover:", LabelHover);
@@ -92,64 +97,56 @@ const SearchResult = function ({
         setLabelHover(false);
         console.log("Leave LabelHover:", LabelHover);
     };
-
-    const onMouseMove = (e) => {
-        // let rect = e.currentTarget.getBoundingClientRect();
-        // let x = e.clientX - rect.left;
-        let x = e.clientX;
-        // let y = e.clientY - rect.top;
-        let y = e.clientY;
-        setMouseXY([x, y]);
+    const topic =expandedTopic[SearchStore.getTopic()];
+    const prediction = Math.round(result.prediction);
+    const labelText = (pred, topic) => {
+        if (topic === "") {
+            topic = "NaN";
+        }
+        if (pred === 2) {
+            return (
+                "Pro " + topic
+            );
+        } else if (pred === 1) {
+            return "Neutral";
+        } else if (pred === 0) {
+            return "Con " + topic ;
+        } else {
+            return "";
+        }
     };
-
-    const styles = {
-        ResultsLabelBox: {
-            width: "100%",
-            display: "flex",
-        },
-        labelBox: {
-            margin: "10px",
-            // cursor: "pointer",
-            padding: "20px 10px",
-            width: "10%",
-            // fontWeight: "bold",
-            border: "0px solid rgba(10, 10, 10, 0.65)",
-            textAlign: "center",
-            backgroundColor: "rgba(218, 218, 218)",
-        },
-        hoverBox: {
-            // display: LabelHover,
-            margin: "-50px -24px",
-            position: "absolute",
-            padding: "15px",
-            color: "rgba(240, 240, 240, 1)",
-            background: "rgba(100, 80, 100, 0.9)",
-            border: "3px solid rgba(30, 30, 30, 0.8)",
-            borderBottom: "4mm ridge rgba(211, 220, 50, .6)",
-        },
-    };
-
     return (
-        <Collapse in={!collapsed}>
-            <div className="SearchResultLabel" style={styles.ResultsLabelBox}>
-                {LabelHover ? (
-                    <span style={styles.hoverBox}>The stance of this document predicted by an AI model.</span>
-                ) : (
-                    <></>
-                )}
-                {searchState.vertical === "text" ? (
-                    <></>
-                ) : (
-                    <div
-                        className="ResultLabel"
-                        style={styles.labelBox}
-                        onMouseOver={handleMouseEnter}
-                        onMouseOut={handleMouseLeave}
-                        onMouseMove={onMouseMove}>
-                        Stance: <b>{stanceValue[result.prediction]}</b>
-                    </div>
-                )}
-                <div className="SearchResult">{view}</div>
+        <Collapse
+            in={!collapsed}
+            key={Math.floor(Math.random() * 10000).toString()}
+        >
+            <div className="SearchResultLabel" key="collapsen">
+                <div className="SearchResultRow">
+                    {/* {LabelHover ? (
+                        <span style={styles.hoverBox}>
+                            The stance of this document predicted by an AImodel.
+                        </span>
+                    ) : (
+                        <></>
+                    )} */}
+                    {searchState.vertical === "text" ? (
+                        <></>
+                    ) : (
+                        <div
+                            className="ResultLabel"
+                            onMouseOver={handleMouseEnter}
+                            onMouseOut={handleMouseLeave}
+                            style={{
+                                backgroundColor:
+                                    predictionValueToColor[prediction],
+                            }}
+                        >
+                            {/* Stance: <b>{stanceValue[Math.round(result.prediction)]}</b> */}
+                            {labelText(prediction, topic)}
+                        </div>
+                    )}
+                    <div className="SearchResult">{view}</div>
+                </div>
             </div>
         </Collapse>
     );
@@ -163,7 +160,7 @@ function formatMetadata(metadata) {
 
     if (config.interface.views && "views" in metadata) {
         elements.push(
-            <span>
+            <span key="1">
                 <i className="fa fa-eye" /> {metadata.views}
             </span>
         );
@@ -171,7 +168,7 @@ function formatMetadata(metadata) {
 
     if (config.interface.ratings && "rating" in metadata) {
         elements.push(
-            <span>
+            <span key="1">
                 <i className="fa fa-thumbs-o-up" /> {metadata.rating.total}
             </span>
         );
@@ -179,7 +176,7 @@ function formatMetadata(metadata) {
 
     if (config.interface.annotations && "annotations" in metadata) {
         elements.push(
-            <span>
+            <span key="1">
                 <i className="fa fa-comments" /> {metadata.annotations.length}
             </span>
         );
@@ -200,7 +197,7 @@ function formatMetadata(metadata) {
         if (formattedTime === now) formattedTime = date.toLocaleTimeString();
 
         elements.push(
-            <span>
+            <span key="2">
                 <i className="fa fa-bookmark" />{" "}
                 <img
                     src={iconUrl}

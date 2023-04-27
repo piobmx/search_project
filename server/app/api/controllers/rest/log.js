@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const log = require('../../../services/log');
+const log = require("../../../services/log");
 
 exports.insertLogs = function (req, res) {
     const userId = req.params.userId;
@@ -8,9 +8,9 @@ exports.insertLogs = function (req, res) {
 
     log.insertLogs(userId, eventData)
         .then(() => {
-            // console.log("INSERTING LOG:")
+            console.log("INSERTING LOG:");
             res.status(201).json({
-                error: false
+                error: false,
             });
         })
         .catch((err) => {
@@ -18,7 +18,7 @@ exports.insertLogs = function (req, res) {
 
             res.status(400).json({
                 error: true,
-                message: 'Could not insert logs.'
+                message: "Could not insert logs.",
             });
         });
 };

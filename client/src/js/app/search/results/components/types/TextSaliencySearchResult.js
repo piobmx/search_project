@@ -53,7 +53,7 @@ class TextSaliencySearchResult extends Component {
                 // console.log("stance:", res[''])
             })
             .then((result) => {
-                console.log(result);
+                // console.log(result);
                 const predictedStance = result.predicted_stance;
                 const saliencies = result.saliency;
                 let textResult = this.state.result.text;
@@ -84,7 +84,7 @@ class TextSaliencySearchResult extends Component {
                     textResult = textResult.replace(word, taggedWord);
                 }
 
-                console.log(textResult);
+                // console.log(textResult);
                 this.setState({
                     result: {
                         ...this.state.result,

@@ -1,11 +1,12 @@
 const {Client} = require('pg')
 
 const client = new Client({
-    host: "localhost",
-    user: "postgres",
+    //host: "84.46.248.181",
+	host: "127.0.0.1",
+    user: "curry",
     port: 5432,
-    password: "",
-    database: "postgres"
+    password: "currypass",
+    database: "curry"
 })
 
 exports.getAuth = function(userId) {

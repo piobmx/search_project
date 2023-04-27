@@ -118,6 +118,7 @@ export default class SearchResultContainer extends React.Component {
 
     render() {
         return <SearchResult
+            key={"resultKey"}
             searchState={this.props.searchState}
             serpId={this.props.serpId}
             index={this.props.index}

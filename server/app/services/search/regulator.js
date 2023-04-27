@@ -16,7 +16,7 @@ const viewedResults = require('./viewedResults');
  * @param relevanceFeedback - String indicating what type of relevance feedback to use (false, individual, shared).
  * @param distributionOfLabour - String indicating what type of distribution of labour to use (false, unbookmarkedSoft, unbookmarkedOnly).
  */
-exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, providerName, relevanceFeedback, distributionOfLabour) {
+exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, providerName, relevanceFeedback, distributionOfLabour, meta) {
     // Convert falsy string to false boolean for cleaner if statements below.
     relevanceFeedback = false;
     distributionOfLabour = false;
@@ -24,7 +24,7 @@ exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, 
     
 
     // const resultPerPageCount = (vertical === 'images' || vertical === 'videos') ? 12 : 10;
-    const resultPerPageCount = 12
+    const resultPerPageCount = 10
     const bookmarks = await bookmark.getBookmarks(sessionId);
     const excludes = await bookmark.getBookmarks(sessionId, true);
     const userBookmarks = await bookmark.getUserBookmarks(sessionId, userId);
@@ -54,8 +54,7 @@ exports.fetch = async function (query, vertical, pageNumber, sessionId, userId, 
     if (!distributionOfLabour) {
         // console.log("------ [regulator.js] 1 1 0");
         console.log('!distributionOfLabour');
-        const response = await provider.fetch(providerName, query, vertical, pageNumber, resultPerPageCount, relevanceFeedbackIds);
-        console.log('distributionOfLabour!');
+        const response = await provider.fetch(providerName, query, vertical, pageNumber, resultPerPageCount, relevanceFeedbackIds, meta);
         // console.log("------ [regulator.js] 1 1 1");
         response.results = addMissingFields(response.results);
         // console.log("------ [regulator.js] 1 1 2");

@@ -23,7 +23,7 @@ const providers = {
  * @params {resultsPerPage} the number of results to use per page
  * @params {relevanceFeedbackDocuments} the set of documents to use for relevance feedback (if supported by provider)
  */
-exports.fetch = function (providerName, query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments) {
+exports.fetch = function (providerName, query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments, meta) {
     if (invalidProvider(providerName)){
         return invalidProvider(providerName);
     }
@@ -34,8 +34,9 @@ exports.fetch = function (providerName, query, vertical, pageNumber, resultsPerP
 
     console.log("------ [provider.js] searchEngine 2: " + searchEngine);
     console.log("_vertical:", vertical)
+    console.log("_METAS:", meta)
 
-    return searchEngine.fetch(query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments);
+    return searchEngine.fetch(query, vertical, pageNumber, resultsPerPage, relevanceFeedbackDocuments, meta);
 };
 
 /*

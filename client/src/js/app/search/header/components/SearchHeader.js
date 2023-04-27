@@ -6,8 +6,9 @@ import SearchBox from "./SearchBox";
 import SearchVerticals from "./SearchVerticals";
 import AccountInfo from "./AccountInfo";
 import SuggestionsContainer from "../../features/querysuggestions/SuggestionsContainer";
+import Timer from "./Timer";
 
-const Header = function ({
+const Header = function({
     query,
     vertical,
     provider,
@@ -27,7 +28,10 @@ const Header = function ({
     username,
     sessionId,
     searchTopic,
+    searchBias,
+    userView,
     showSearchHints,
+    QID
 }) {
     return (
         <div className="SearchHeader">
@@ -40,7 +44,8 @@ const Header = function ({
                 onSubmit={(e) => {
                     e.preventDefault();
                     searchHandler();
-                }}>
+                }}
+            >
                 <SearchBox
                     query={query}
                     changeHandler={queryChangeHandler}
@@ -52,15 +57,17 @@ const Header = function ({
                     hideSuggestionsHandler={hideSuggestionsHandler}
                     showSuggestions={showSuggestions}
                 />
-{/* 
+
                 <SearchVerticals
                     query={query}
                     activeVertical={vertical}
                     changeHandler={verticalChangeHandler}
                     provider={provider}
-                /> */}
+                />
             </form>
-
+            {
+                <Timer></Timer>
+            }
             {showAccountInfo && (
                 <AccountInfo
                     userId={userId}
@@ -69,6 +76,9 @@ const Header = function ({
                     isManager={isManager}
                     sessionId={sessionId}
                     searchTopic={searchTopic}
+                    searchBias={searchBias}
+                    userView={userView}
+                    QID={QID}
                 />
             )}
 

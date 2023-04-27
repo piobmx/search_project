@@ -8,7 +8,7 @@ import SyncStore from '../../../../stores/SyncStore';
 
 const CHANGE_EVENT = 'change_chat';
 
-////
+// console.log('------ChatStore');
 
 let state = {
     messageList: [],

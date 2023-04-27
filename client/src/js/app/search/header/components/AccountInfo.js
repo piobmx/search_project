@@ -1,9 +1,9 @@
 import "./SearchHeader.pcss";
-import { Route, Router } from 'react-router-dom'
+// import { Route, Router } from 'react-router-dom'
 import React from "react";
-import Helpers from "../../../../utils/Helpers";
+// import Helpers from "../../../../utils/Helpers";
 import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 const AccountInfo = function ({
     userId,
@@ -12,12 +12,14 @@ const AccountInfo = function ({
     username,
     isManager,
     searchTopic,
+    searchBias,
+	userView,
+    QID,
 }) {
-    console.log("ACCOUNTINFO:", username);
     return (
         <div className="AccountInfo">
             <p>
-                User ID: {userId}
+                {/* User ID: {userId} */}
                 {isManager ? (
                     <Button
                         variant="light"
@@ -31,14 +33,14 @@ const AccountInfo = function ({
                 ) : (
                     ""
                 )}
+                {/* Status: {isManager ? "Manager" : "User"} */}
+                Qualtrics ResponseID: {QID ? QID : "Qualtrics Response ID not Found."}
                 <br />
-                Status: {isManager ? "Manager" : "User"}
-                <br />
-                Session ID: {sessionId ? sessionId : "Session ID Not Found."}
-                <br />
-                Username: {username ? username : "User not log in" }
+                User Viewpoint: <b>{userView ? userView: "User Viewpoints Unknown"}</b>
                 <br />
                 Assigned Topic: <b>{searchTopic ? searchTopic : "Topic not assigned"}</b>
+                <br />
+                Assigned Bias: <b>{searchBias ? searchBias : "Bias not assigned"}</b>
             </p>
         </div>
     );

@@ -5,13 +5,15 @@ import SearchStore from "../../SearchStore";
 function SearchHint({ topic }) {
     switch (topic) {
         case "":
-            return <p>Topic not found.</p>;
-        case "Atheism":
-            return <p>Hints: try "atheism"</p>;
-        case "Intellectual Property Right":
-            return <p>Hints: try: "intellectual right", "property right"</p>;
-        case "School Uniform":
-            return <p>Hints: try: "unifrom", "school uniform"</p>;
+			return <p>Topic not assigned, try: "atheism", "school uniforms"....</p>;
+        case "na":
+			return <p>Topic not assigned, try: "atheism", "school uniforms"....</p>;
+        case "ath":
+			return <p>Hint: You are assigned to "Atheism" topic, please include "atheism" in your query.</p>;
+        case "ipr":
+			return <p>Hint: You are assigned to "intellectual property rights" topic, please include "intellectual right" or "property right" in your query.</p>;
+        case "su":
+            return <p>Hint: You are assigned to "school uniform" topic, please include "school uniform" in your query.</p>;
         default:
             return null;
     }

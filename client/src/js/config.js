@@ -2,9 +2,9 @@ import WebSearchResult from "./app/search/results/components/types/WebSearchResu
 import ImagesSearchResult from "./app/search/results/components/types/ImagesSearchResult";
 import VideosSearchResult from "./app/search/results/components/types/VideosSearchResult";
 import NewsSearchResult from "./app/search/results/components/types/NewsSearchResult";
-import TextSaliencySearchResult from "./app/search/results/components/types/TextSaliencySearchResult";
+// import TextSaliencySearchResult from "./app/search/results/components/types/TextSaliencySearchResult";
 import TextSearchResult from "./app/search/results/components/types/TextSearchResult";
-import TextLabelledSearchResults from "./app/search/results/components/types/TextLabelledSearchResults";
+// import TextLabelledSearchResults from "./app/search/results/components/types/TextLabelledSearchResults";
 // The keys in this mapping determines the order and names of the verticals shown to the user.
 // The values are the types of the result components that are used for each vertical.
 // Each provider must have at least one vertical.
@@ -17,8 +17,10 @@ const providerVerticals = {
     ]),
     'elasticsearch': new Map([
         ['text', TextSearchResult],
-        ['labelled', TextLabelledSearchResults],
-        ['explanation', TextSaliencySearchResult],
+        //['labelled', TextLabelledSearchResults],
+        ['labelled', TextSearchResult],
+        //['explanation', TextSaliencySearchResult],
+        ['explanation', TextSearchResult],
     ]),
     'indri': new Map([
         ['AQUAINT', TextSearchResult]
@@ -37,11 +39,11 @@ var config = {
         annotations: false, /* allow users to place annotations (comments) on documents */
         ratings: false, /* allow users to rate search results and show the ratings for the group */
         views: false, /* show the number of times a result has been viewed */
-        chat: true, /* enable the group chat feature */
+        chat: false, /* enable the group chat feature */
         timeIndicator: false, /* show the time it took to return results */
-        star: true, /* allow users to star bookmarks */
+        star: false, /* allow users to star bookmarks */
         saveTimestamp: true, /* show the time and date at which a document was saved */
-        verticals: true, /* show the vertical selection menu */
+        verticals: process.env.DISPLAY==="development" ? true : false, /* show the vertical selection menu */
         notepad: true,
         salientMap: false,
     }

@@ -50,7 +50,7 @@ class LoginForm extends React.Component {
         })
 
         try {
-            let res = await fetch('http://localhost:4443/v1/passwordLogin', {
+            let res = await fetch(process.env.REACT_APP_SERVER_URL + '/v1/passwordLogin', {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -74,7 +74,7 @@ class LoginForm extends React.Component {
                 this.resetForm();
             }
         } catch(e){
-            console.log(e);
+            // console.log(e);
             this.resetForm();
         }
     }
@@ -84,7 +84,7 @@ class LoginForm extends React.Component {
     }
 
     render() {
-        console.log("isManager: " + LoginStore.isManager);
+        // console.log("isManager: " + LoginStore.isManager);
         if(!UserStore.isLoggedIn){
             return (
                 <div className='loginForm'>

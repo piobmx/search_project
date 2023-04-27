@@ -10,7 +10,7 @@ class LoginStore extends EventEmitter {
     }
 
     getAuth() {
-        console.log("getting Auths");
+        // console.log("getting Auths");
         request
             .get(
                 process.env.REACT_APP_SERVER_URL +
@@ -21,9 +21,9 @@ class LoginStore extends EventEmitter {
                     AccountStore.getSessionId()
             )
             .end((err, res) => {
-                console.log("getAuth result:", err, res);
+                // console.log("getAuth result:", err, res);
                 if (err || !res.body || res.body.error) {
-                    console.log("Auth Err", err);
+                    // console.log("Auth Err", err);
                     this.isManager = false;
                 } else {
                     this.isManager = res.body.auth;

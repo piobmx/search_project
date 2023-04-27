@@ -55,7 +55,7 @@ class CollapsedSearchResults extends React.Component {
 
 
         return (
-            <div>
+            <div key="1">
                 <Collapse in={this.props.resultsAreCollapsed}>
                     <div>
                         <div className="result-collapsed">

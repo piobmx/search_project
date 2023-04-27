@@ -2,6 +2,7 @@ import React from "react";
 
 import SearchActions from "../../../actions/SearchActions";
 import SearchStore from "../SearchStore";
+// import UserStore from "../../../stores/UserStore";
 
 import SearchResults from "./components/SearchResults";
 import DocumentViewer from "./components/viewer/Viewer";
@@ -9,6 +10,7 @@ import DocumentViewer from "./components/viewer/Viewer";
 import { log } from "../../../utils/Logger";
 import { LoggerEventTypes } from "../../../utils/LoggerEventTypes";
 import Helpers from "../../../utils/Helpers";
+import UserStore from "../../../stores/UserStore";
 
 const getState = function () {
     return {
@@ -80,7 +82,7 @@ export default class SearchResultsContainer extends React.Component {
             this.setState(newState);
         }
 
-        SearchStore.reshuffleResults("not bias")
+        //SearchStore.reshuffleResults("not bias")
     }
 
     getMetaInfo() {
@@ -108,6 +110,10 @@ export default class SearchResultsContainer extends React.Component {
             previous_page: this.state.activePage,
             serpId: this.state.serpId,
             session: localStorage.getItem("session-num"),
+            qid: UserStore.getQualtricsID,
+            topic: this.state.searchState.topic,
+            viewpoint: this.state.searchState.viewpoint,
+            biasType: this.state.searchState.biasType,
         });
 
         SearchActions.changePage(page);
@@ -146,14 +152,14 @@ export default class SearchResultsContainer extends React.Component {
     }
 
     showAllCollapsedResults() {
-        log(LoggerEventTypes.SEARCH_SHOW_ALL_COLLAPSED, this.getMetaInfo());
+        // log(LoggerEventTypes.SEARCH_SHOW_ALL_COLLAPSED, this.getMetaInfo());
         this.setState({
             collapsed: {},
         });
     }
 
     hideAllCollapsedResults() {
-        log(LoggerEventTypes.SEARCH_HIDE_ALL_COLLAPSED, this.getMetaInfo());
+        // log(LoggerEventTypes.SEARCH_HIDE_ALL_COLLAPSED, this.getMetaInfo());
         const collapsed = {};
         this.state.results.forEach((result) => {
             if (this.isCollapsible(result)) {
@@ -180,7 +186,7 @@ export default class SearchResultsContainer extends React.Component {
     }
 
     render() {
-        console.log("rendering Searchresultscontainer")
+        // console.log("rendering Searchresultscontainer")
         let postflag = localStorage.getItem("post-test") || 0;
         return (
             <div>
@@ -189,6 +195,7 @@ export default class SearchResultsContainer extends React.Component {
                         {...this.state}
                         pageChangeHandler={this.pageChangeHandler}
                         key="results"
+                        topic={SearchStore.getTopic()}
                         isCollapsible={this.isCollapsible}
                         showCollapsedResults={this.showCollapsedResults}
                         hideCollapsedResults={this.hideCollapsedResults}

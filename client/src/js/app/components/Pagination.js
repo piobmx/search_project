@@ -3,7 +3,7 @@ import React from "react";
 const Pagination = ({postsPerPage, totalPosts, paginate, currentPage}) => {
     const pageNumbers = [];
 
-    let n = 12;
+    let n = 10;
     let l = currentPage - n/2;
     let r = currentPage + n/2 - 1;
     let max = Math.ceil(totalPosts / postsPerPage);
@@ -34,12 +34,12 @@ const Pagination = ({postsPerPage, totalPosts, paginate, currentPage}) => {
                     ?<li key={0}>
                         <a onClick={() => paginate(1)} href='!#' className='page-link'>{"<<"}</a>
                     </li>
-                    :<li></li>
+                    :<li key={1}></li>
                 }
 
                 {pageNumbers.map(number => (
                     <li key={number}>
-                        {number == currentPage
+                        {number === currentPage
                         ?<a onClick={() => paginate(number)} href='!#' className='active'>
                             {number}
                         </a>
@@ -53,7 +53,7 @@ const Pagination = ({postsPerPage, totalPosts, paginate, currentPage}) => {
                     ?<li key={pageNumbers.length/postsPerPage}>
                         <a onClick={() => paginate(max)} href='!#' className='page-link'>{">>"}</a>
                     </li>
-                    :<li></li>
+                    :<li key={0}></li>
                 }
             </ul>
         </nav>

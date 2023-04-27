@@ -1,51 +1,65 @@
 import "./SearchResults.pcss";
 
 import React from "react";
-import config from "../../../../config";
-import Loader from "react-loader";
-
-import SearchResultContainer from "../SearchResultContainer";
-import SearchResultsPagination from "./SearchResultsPagination";
-import CollapsedResultsButton from "./CollapsedSearchResults";
-import { Button } from "react-bootstrap";
-import CenteredMessage from "../../../common/CenteredMessage";
-import Helpers from "../../../../utils/Helpers";
+import SearchStore from "../../SearchStore";
 
 const predictionValueToColor = {
-    0: "#ea5555",
-    1: "#aaaaaa",
-    2: "#35cc35",
+    0: "#C395E4",
+    1: "#ABB3C6",
+    2: "#B0E0E6",
 };
 
+const predictionValueToLabel = {
+    0: "Con",
+    1: "Neutral",
+    2: "Pro",
+};
 
-const SearchResultsAggregation = function ({ searchState, results }) {
-    if (searchState['vertical'] === "text") {
-        return (
-            <></>
-        )
+const translateTopic = {
+    ipr: "intellectual property rights",
+    su: "school uniforms",
+    ath: "atheism",
+};
+
+const SearchResultsAggregation = function({ searchState, results }) {
+    if (searchState["vertical"] === "text") {
+        return <></>;
     }
+    const topic = SearchStore.getTopic();
     let aggregation = results.map((result) => {
+        let prefix = predictionValueToLabel[Math.round(result.prediction)];
+        let text;
+        if (prefix === "Neutral") {
+            text = `Neutral towards ${translateTopic[topic]}`;
+        } else {
+            text = `${prefix} ${translateTopic[topic]}`;
+        }
         return (
             <div
+                id="ax"
                 style={{
                     ...style.rectangle,
-                    backgroundColor: predictionValueToColor[result.prediction],
-                }}>
-                {result.prediction}
+                    backgroundColor:
+                        predictionValueToColor[Math.round(result.prediction)],
+                }}
+            >
+                {text}
             </div>
         );
     });
 
-    let sumStance = 0;
-    results.forEach((result) => {
-        sumStance += result.prediction;
-    });
+    // let sumStance = 0;
+    // results.forEach((result) => {
+    //     sumStance += Math.round(result.prediction);
+    // });
 
     return (
         <div style={style.Box}>
-            <h3 style={{ margin: "5px" }}>Predictions Overview:</h3>
+            <h3 style={{ margin: "5px" }}>
+                Stance Overview of Search Results Appearing in this Page:
+            </h3>
             {aggregation}
-            Overall Stance: {sumStance}
+            {/* Overall Stance: {sumStance} */}
         </div>
     );
 };

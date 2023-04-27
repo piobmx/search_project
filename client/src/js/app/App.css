@@ -1,249 +1,303 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 div.preview {
-  /* margin: 0 50px; */
-  margin: 0, 10px; /* For displaying both label box and search preview*/
-  padding: 20px;
-  width: 550px;
-  /* border:1px solid #ddd; */
-  border-radius: 5px;
-  align-items: center;
+    /* margin: 0 50px; */
+    /* margin: 0, 10px; For displaying both label box and search preview */
+    padding: 20px;
+    width: 750px;
+    /* display: table-cell; */
+
+    /* width: 80%; */
+    /* border:1px solid #d11; */
+    border-radius: 5px;
+    align-items: center;
+}
+
+.SearchResultRow {
+    display: table-row;
+    margin: 3px;
+}
+
+.SearchResultLabel {
+    margin: 10px;
+    display: table;
+    width: 100%;
+    /* flex-wrap: wrap; */
+    align-items: center;
+    /* border: 1px solid rgb(10, 10, 210); */
+}
+
+.favorItem .inner03 .exp {
+    background-color: #B0E0E6;
+    color: #123123;
+}
+.neutralItem .inner03 .exp {
+    background-color: #ABB3C6;
+}
+
+.againstItem .inner03 .exp {
+    background-color: #C395E4;
+    color: #123333
+}
+
+/* .exp {
+    background-color: powderblue;
+} */
+.ResultLabel {
+    display: table-cell;
+    padding: 0;
+    vertical-align: middle;
+    width: 10%;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
 }
 
 div.inner {
-  font-family: arial, sans-serif;
-  width: 600px;
+    font-family: arial, sans-serif;
+    width: 600px;
 }
 
 div.inner01 {
-  max-width: 600px;
-  overflow: hidden;
-  color: rgb(26, 13, 171);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.2;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  display: block;
+    max-width: 600px;
+    overflow: hidden;
+    color: rgb(26, 13, 171);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 div.inner02 {
-  height: 18px;
-  color: rgb(0, 102, 33);
-  font-size: 14px;
-  line-height: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
+    height: 18px;
+    color: rgb(0, 102, 33);
+    font-size: 14px;
+    line-height: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 div.inner03 {
-  color: rgb(84, 84, 84);
-  font-size: 13px;
-  line-height: 1.4;
-  overflow-wrap: break-word;
-  display: block;
+    color: rgb(84, 84, 84);
+    font-size: 12px;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+    display: block;
 }
 
 nav.a1 {
-  width: 1300px;
-  margin:0 auto;
+    width: 1300px;
+    margin: 0 auto;
 }
 
 ul.pagination {
-  display: inline-block;
-  padding: 0;
-  margin: 0;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
 }
 
 ul.pagination li {
-  display: inline;
+    display: inline;
 }
 
 ul.pagination li a {
-  color: black;
-  float: left;
-  padding: 8px 16px;
-  text-decoration: none;
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
 }
 
 ul.pagination li a.active {
-  background-color: #4CAF50;
-  color: white;
+    background-color: #4caf50;
+    color: white;
 }
 
 ul.pagination li a:hover:not(.active) {
-  background-color: #ddd;
+    background-color: #ddd;
 }
 
 ul.pagination li a {
-  border-radius: 5px;
+    border-radius: 5px;
 }
 
 ul.pagination li a.active {
-  border-radius: 5px;
+    border-radius: 5px;
 }
 
 ul.pagination li a {
-  transition: background-color .3s;
+    transition: background-color 0.3s;
 }
 
+.loguicontent {
+    /* position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
+}
 .content {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 div.inner {
-  font-family: arial, sans-serif;
-  width: 600px;
+    font-family: arial, sans-serif;
+    width: 600px;
 }
 
-
-body, html, #root, .app, .container {
-  width: 100%;
-  height: 100%;
+body,
+html,
+#root,
+.app,
+.container {
+    width: 100%;
+    height: 100%;
 }
 
 .container {
-  font-size: 28px;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #282c34;
+    font-size: 28px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #282c34;
 }
 
 .loginForm {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 600px;
-  border-radius: 5px;
-  background: #00a6d6;
-  padding: 10px;
-  position: absolute;
-  top: 30%;
-  left: 34%;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 5px;
+    background: #00a6d6;
+    padding: 10px;
+    position: absolute;
+    top: 30%;
+    left: 34%;
 }
 
 .inputField {
-  padding-top: 16px;
+    padding-top: 16px;
 }
 
 .input {
-  box-sizing: border-box;
-  outline: none;
-  border: solid 2px #1189de;
-  border-radius: 4px;
-  color: #292929;
-  width: 100%;
-  padding: 12px;
-  font-size: 14px;
-  background: rgba(255,255, 255, 1);
+    box-sizing: border-box;
+    outline: none;
+    border: solid 2px #1189de;
+    border-radius: 4px;
+    color: #292929;
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 1);
 }
 
 .submitButton {
-  padding-top: 16px;
+    padding-top: 16px;
 }
 
 .btnMe {
-  width: 100%;
-  min-width: 280px;
-  color: #1189de;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: bold;
-  border: solid 2px #1189de;
-  border-radius: 4px;
-  background: #fff;
-  cursor: pointer;
+    width: 100%;
+    min-width: 280px;
+    color: #1189de;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: solid 2px #1189de;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
 }
 
 .loginTitle {
-  color: #ffffff;
-  font-size: 30px;
-  text-align: center;
+    color: #ffffff;
+    font-size: 30px;
+    text-align: center;
 }
 
-.logui_tr{
-  height: 60px;
-  background: #36304a;
+.logui_tr {
+    height: 60px;
+    background: #36304a;
 }
 
-.logui_th{
-  font-family: OpenSans-Regular;
-  font-size: 18px;
-  color: #fff;
-  line-height: 1.2;
-  font-weight: unset;
+.logui_th {
+    width:100px;
+    font-family: OpenSans-Regular;
+    font-size: 18px;
+    color: #fff;
+    line-height: 1.2;
+    font-weight: unset;
 }
 
-.logui_td{
-  font-family: OpenSans-Regular;
-  font-size: 18px;
-  color: rgb(29, 29, 29);
-  line-height: 1.2;
-  font-weight: unset;
-  padding-right: 40px;
+.logui_td {
+    font-family: OpenSans-Regular;
+    font-size: 18px;
+    color: rgb(29, 29, 29);
+    line-height: 1.2;
+    font-weight: unset;
+    padding-right: 40px;
 }
 
-.logui_td_id{
-  width: 200px;
-  padding-right: 40px;
+.logui_td_id {
+    width: 200px;
+    padding-right: 40px;
 }
 
-.logui_td_sp{
-  font-family: OpenSans-Regular;
-  font-size: 15px;
-  color: rgb(29, 29, 29);
-  line-height: 1.2;
-  font-weight: unset;
-  padding-right: 40px;
+.logui_td_sp {
+    font-family: OpenSans-Regular;
+    font-size: 15px;
+    color: rgb(29, 29, 29);
+    line-height: 1.2;
+    font-weight: unset;
+    padding-right: 40px;
 }
 
-.msg{
-  color: rgb(255, 255, 255);
-  width: 100%;
-  text-align: center;
+.msg {
+    color: rgb(255, 255, 255);
+    width: 100%;
+    text-align: center;
 }

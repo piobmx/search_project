@@ -7,7 +7,7 @@ import ActionTypes from '../../../../actions/ActionTypes';
 import AccountStore from '../../../../stores/AccountStore';
 import SyncStore from '../../../../stores/SyncStore';
 import SearchStore from "../../SearchStore";
-
+// console.log('-----RatingStore');
 const CHANGE_EVENT = 'change_rating';
 
 let state = {

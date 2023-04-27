@@ -9,7 +9,7 @@ import SyncStore from '../../../../stores/SyncStore';
 import SearchStore from "../../SearchStore";
 import AnnotationStore from "../annotation/AnnotationStore";
 import RatingStore from "../rating/RatingStore.js";
-
+// console.log('-----BookmarkStore');
 const CHANGE_EVENT = 'change_bookmark';
 
 const state = {

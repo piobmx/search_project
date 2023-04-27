@@ -8,8 +8,8 @@ import SearchStore from "../app/search/SearchStore";
 import QueryHistoryStore from "../app/search/features/queryhistory/QueryHistoryStore";
 import BookmarkStore from "../app/search/features/bookmark/BookmarkStore";
 import $ from 'jquery';
-
 /* global introJs */
+// console.log('------IntroStore');
 const intro = introJs().setOptions({
     doneLabel:  "Ok!",
     showStepNumbers: false,

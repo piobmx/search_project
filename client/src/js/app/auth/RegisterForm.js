@@ -49,7 +49,7 @@ class RegisterForm extends React.Component {
         }
 
         try {
-            let res = await fetch("http://localhost:4443/v1/register", {
+            let res = await fetch(process.env.REACT_APP_SERVER_URL + "/v1/register", {
                 method: "post",
                 headers: {
                     Accept: "application/json",

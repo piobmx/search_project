@@ -6,31 +6,34 @@ import { register } from "../../utils/Dispatcher";
 import ActionTypes from "../../actions/ActionTypes";
 import SessionActions from "../../actions/SessionActions";
 
-import { log } from "../../utils/Logger";
-import { LoggerEventTypes } from "../../utils/LoggerEventTypes";
+// import { log } from "../../utils/Logger";
+// import { LoggerEventTypes } from "../../utils/LoggerEventTypes";
 import Helpers from "../../utils/Helpers";
 
 import SyncStore from "../../stores/SyncStore";
 import AccountStore from "../../stores/AccountStore";
 import history from "../History";
-import BookmarkStore from "./features/bookmark/BookmarkStore";
-import AnnotationStore from "./features/annotation/AnnotationStore";
-import RatingStore from "./features/rating/RatingStore";
+// import BookmarkStore from "./features/bookmark/BookmarkStore";
+// import AnnotationStore from "./features/annotation/AnnotationStore";
+// import RatingStore from "./features/rating/RatingStore";
 import React from "react";
+import UserStore from "../../stores/UserStore";
 const CHANGE_EVENT = "change_search";
 
 ////
 
-console.log(
-    "------ Helpers.getURLParameter('provider'): " +
-        Helpers.getURLParameter("provider")
-);
-console.log("------ config.defaultProvider: " + config.defaultProvider);
+if (process.env.NODE_ENV === "development") {
+    console.log(
+        "------ Helpers.getURLParameter('provider'): " +
+            Helpers.getURLParameter("provider")
+    );
+    console.log("------ config.defaultProvider: " + config.defaultProvider);
+}
 const provider = Helpers.getURLParameter("provider") || config.defaultProvider;
 
 let state;
 
-const _setVariant = function () {
+const _setVariant = function() {
     let variant;
     if (
         config.fallbackToS0ForGroupSize1 &&
@@ -51,13 +54,16 @@ const _setVariant = function () {
             : variant === "S1-Hard"
             ? "unbookmarkedOnly"
             : "unbookmarkedSoft";
-
 };
 
 /*
  * Reset all SearchStore state except variant
  */
-const _setState = function () {
+const _setState = function() {
+    const bias = localStorage.getItem("bias") || "";
+    const topic = localStorage.getItem("topic") || "";
+    const view = localStorage.getItem("view") || "";
+
     state = {
         query: Helpers.getURLParameter("q") || "",
         vertical:
@@ -78,7 +84,9 @@ const _setState = function () {
         activeUrl: "",
         activeDoctext: "",
         ranking: "random",
-        topic: '',
+        topic: topic,
+        bias: bias,
+        view: view,
     };
     _setVariant();
 };
@@ -109,55 +117,66 @@ const SearchStore = Object.assign(EventEmitter.prototype, {
         _update_metadata();
     },
 
-    reshuffleResults(rank) {
-        console.log("rank result by", rank);
-        let randomResults = state.results;
-        let favors = [];
-        let against = [];
-        let neutral = [];
-        let rankedResults;
-        for (const r of randomResults) {
-            if (r.prediction === 0) {
-                against.push(r);
-            } else if (r.prediction === 1) {
-                neutral.push(r);
-            } else if (r.prediction === 2) {
-                favors.push(r);
-            } else {
-                continue;
-            }
-        }
-        if (rank === "bias") {
-            rankedResults = against.concat(neutral.concat(favors));
-        } else if (rank === "not bias") {
-            const fn = (arr) =>
-                Array.from(
-                    {
-                        length: Math.max(...arr.map((o) => o.length)), // find the maximum length
-                    },
-                    (_, i) => arr.map((r) => r[i] ?? null) // create a new row from all items in same column or substitute with null
-                ).flat(); // flatten the results
-
-            const arr = [neutral, favors, against];
-
-            rankedResults = fn(arr);
-            rankedResults = rankedResults.filter(function (val) {
-                return val !== null;
-            });
-            // console.log("rankded", rankedResults);
-        } else {
-            rankedResults = randomResults;
-        }
-        // console.log("ranked:", rankedResults);
-        state.results = rankedResults;
-    },
-
     ////
-    getTopic() {
-        return state.topic
+    getUserView() {
+        return state.view;
     },
-    setTopic(newTopic) {
-        state.topic = newTopic
+    setUserView(newView, update) {
+        state.view = newView;
+        localStorage.setItem("view", newView);
+        if (update) {
+            _updateUrl(
+                state.query,
+                state.vertical,
+                state.page,
+                state.provider,
+                state.variant,
+                state.topic,
+                state.bias,
+                state.view
+            );
+        }
+        this.emitChange();
+    },
+    getBias() {
+        return state.bias;
+    },
+    setBias(newBias, update) {
+        state.bias = newBias;
+        localStorage.setItem("bias", newBias);
+        if (update) {
+            _updateUrl(
+                state.query,
+                state.vertical,
+                state.page,
+                state.provider,
+                state.variant,
+                state.topic,
+                state.bias,
+                state.view
+            );
+        }
+        this.emitChange();
+    },
+
+    getTopic() {
+        return state.topic;
+    },
+    setTopic(newTopic, update) {
+        state.topic = newTopic;
+        localStorage.setItem("topic", newTopic);
+        if (update) {
+            _updateUrl(
+                state.query,
+                state.vertical,
+                state.page,
+                state.provider,
+                state.variant,
+                state.topic,
+                state.bias,
+                state.view
+            );
+        }
         this.emitChange();
     },
 
@@ -193,55 +212,11 @@ const SearchStore = Object.assign(EventEmitter.prototype, {
     },
 
     getSearchResults() {
-        if (state.tutorial) {
-            return [
-                {
-                    name: "You can view the first result here",
-                    id: "1",
-                    snippet: "This is the first result...",
-                    metadata: {},
-                },
-                {
-                    name: "You can view the second result here",
-                    id: "2",
-                    snippet: "This is the second result...",
-                    metadata: {
-                        bookmark: {
-                            userId: AccountStore.getUserId(),
-                            date: new Date(),
-                        },
-                        views: 10,
-                        rating: { total: -5, rating: 0 },
-                        annotations: [1],
-                    },
-                },
-                {
-                    name: "You can view the third result here",
-                    id: "3",
-                    snippet: "This is the third result...",
-                    metadata: {
-                        bookmark: { userId: "test", date: new Date() - 2000 },
-                    },
-                },
-                {
-                    name: "You can view the fourth result here",
-                    id: "4",
-                    snippet: "This is the fourth result...",
-                    metadata: {},
-                },
-                {
-                    name: "You can view the fifth result here",
-                    id: "5",
-                    snippet: "This is the fifth result...",
-                    metadata: {},
-                },
-            ];
-        }
-
         return state.results;
     },
+
     getSearchResultsMap() {
-        return state.results.reduce(function (map, result) {
+        return state.results.reduce(function(map, result) {
             if (result.url) {
                 map[result.url] = result;
             } else {
@@ -251,12 +226,16 @@ const SearchStore = Object.assign(EventEmitter.prototype, {
         }, {});
     },
     getSearchState() {
-        return {
+        const searchState = {
             query: state.query,
             vertical: state.vertical,
             page: state.page || 1,
             provider: state.provider,
+            topic: state.topic,
+            viewpoint: state.view,
+            biasType: state.bias,
         };
+        return searchState
     },
     getSearchProgress() {
         return {
@@ -286,7 +265,7 @@ const SearchStore = Object.assign(EventEmitter.prototype, {
     dispatcherIndex: register((action) => {
         switch (action.type) {
             case "rank":
-                _reshuffleResults();
+                //_reshuffleResults();
                 break;
             case "set_stance":
                 _setStance();
@@ -340,7 +319,7 @@ const SearchStore = Object.assign(EventEmitter.prototype, {
 const _setStance = () => {};
 ////
 const _save_logui = (logui_json) => {
-    console.log("inside logui_json");
+    // console.log("inside logui_json");
 
     logui_json = {
         query_box_focus: "test",
@@ -364,18 +343,34 @@ const _save_logui = (logui_json) => {
                 AccountStore.getSessionId()
         )
         .end((err, res) => {
-            console.log("logui");
+            // console.log("logui");
             if (err || !res.body || res.body.error) {
-                console.log("", err);
+                // console.log("", err);
             }
-            console.log("logui res", res.body.result);
+            // console.log("logui res", res.body.result);
             // SearchStore.emitChange();
         });
 };
 
+
+const topicKeywords = {
+    "ath": ["atheist", "atheism"],
+    "ipr": ["property right", "intellectual property right", "intellectual right"],
+    "su": ["uniform", "school uniform"],
+}
+
 const _search = (query, vertical, page) => {
     const startTime = new Date().getTime();
-    console.log("start _Search");
+    // const bias = state.bias;
+    // console.log('');console.log("start _Search");
+    // console.log(query, state.query);
+    // console.log(vertical, state.vertical);
+    // console.log(page, state.page);
+    // console.log("BIAS", bias);
+    // if (!query) {
+    //     query = "a"
+    // }
+    // console.log("QUERY:", query);
     if (
         !(
             query === state.query &&
@@ -383,7 +378,6 @@ const _search = (query, vertical, page) => {
             page === state.page
         )
     ) {
-        console.log("query or vertical or page don't match");
         state.results = [];
     }
 
@@ -392,22 +386,36 @@ const _search = (query, vertical, page) => {
     state.page = page || state.page || 1;
     state.finished = false;
     state.resultsNotFound = false;
-    console.log("_updateURL");
 
     _updateUrl(
         state.query,
         state.vertical,
         state.page,
         state.provider,
-        state.variant
+        state.variant,
+        state.topic,
+        state.bias,
+        state.view
     );
+
+    const url = window.location.href;
+    // console.log("url:", url);
+    let params = {};
+    let paramString = url.substring(url.indexOf("?") + 1);
+    let paramArray = paramString.split("&");
+    for (let i = 0; i < paramArray.length; i++) {
+        let param = paramArray[i].split("=");
+        params[param[0]] = param[1];
+    }
+    // console.log("SParams:", params);
+
     SyncStore.emitSearchState(SearchStore.getSearchState());
     SearchStore.emitChange();
 
     if (query === "") {
         return;
     }
-    console.log("start _requesting");
+    // console.log("start _requesting");
     const searchAPI =
         process.env.REACT_APP_SERVER_URL +
         "/v1/search/" +
@@ -416,6 +424,12 @@ const _search = (query, vertical, page) => {
         state.query +
         "&page=" +
         state.page +
+        "&topic=" +
+        SearchStore.getTopic() +
+        "&bias=" +
+        SearchStore.getBias() +
+        "&viewpoint=" +
+        SearchStore.getUserView() +
         "&userId=" +
         AccountStore.getUserId() +
         "&sessionId=" +
@@ -426,36 +440,51 @@ const _search = (query, vertical, page) => {
     // state.relevanceFeedback +
     // "&distributionOfLabour=" +
     // state.distributionOfLabour
-    console.log("requesting:", searchAPI);
+    // console.log("requesting:", searchAPI);
 
-    const getSearchResult = async function (searchAPI) {
-        console.log("asycning API");
-        let res = await request
-            .get(searchAPI)
-            .set("Accept", "application/json")
-            .timeout({
-                response: 1000, // Wait 5 seconds for the server to start sending,
-                deadline: 5000, // but allow 1 minute for the file to finish loading.
-            });
-
-        // await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // .set("Cache-Control", "no-cache, must-revalidate");
-        console.log(res);
-        return res;
+    const getSearchResult = async function(searchAPI) {
+        // console.log("asycning API");
+        try {
+            // console.log("TRYING...", searchAPI);
+            let res = await request
+                .get(searchAPI)
+                .set("Accept", "application/json")
+                .timeout({
+                    response: 3000, // Wait 1 seconds for the server to start sending,
+                    deadline: 5000, // but allow 5 seconds for the file to finish loading.
+                });
+            // await new Promise((resolve) => setTimeout(resolve, 500));
+            // .set("Cache-Control", "no-cache, must-revalidate");
+            return res;
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     getSearchResult(searchAPI)
         .then((res) => {
-            console.log("inside THEN REST");
-
             if (res.body || res.body.error) {
-                const results = res.body.results;
+                let results = res.body.results;
+                // rank results here ...
+                // console.log(`ranking results...(${bias})`);
+                // results = rankingResults(results, bias);
+
                 for (let i = 0; i < results.length; i++) {
                     results[i].position = i;
                 }
 
-                state.results = results;
+                console.log(";state.query", state.query.toLowerCase());
+                console.log(";state.topic", state.topic);
+                
+                let flag = false
+                const currentQuery = state.query.toLowerCase()
+                for (let keyword of topicKeywords[state.topic]) {
+                    if (currentQuery.includes(keyword)) flag = true
+                }
+
+                if (flag) {state.results = results;}
+                else {state.results = []}
+                // console.log("RESULTS:", results);
                 state.matches = res.body.matches;
                 state.serpId = res.body.id;
             }
@@ -463,25 +492,25 @@ const _search = (query, vertical, page) => {
             if (state.results.length === 0) {
                 state.resultsNotFound = true;
             }
-            console.log("results:", state.results);
+            // console.log("results:", state.results);
             state.elapsedTime = new Date().getTime() - startTime;
             state.finished = true;
 
             SearchStore.emitChange();
             SessionActions.getQueryHistory();
-            console.log("action end");
+            // console.log("action end");
             // } catch (err) {
             // console.log("err:", err);
             // }
         })
         .catch((err) => {
-            console.log("requesting elastic provide fails:", err);
+            // console.log("requesting elastic provide fails:", err);
         });
 
-    console.log("SKIPPING END");
+    // console.log("SKIPPING END");
 };
 
-const _getById = function (id) {
+const _getById = function(id) {
     request
         .get(
             process.env.REACT_APP_SERVER_URL +
@@ -531,20 +560,106 @@ const _getById = function (id) {
         });
 };
 
-const updateStance = function () {};
+const topicList = ["na", "ipr", "ath", "su"];
+const biasTypeList = ["na", "balanced", "biased"];
+const viewPointList = ["na", "vp0", "vp2", "vp1"];
 
-const _updateUrl = function (query, vertical, page, provider, variant) {
+const _updateUrl = function(
+    query,
+    vertical,
+    page,
+    provider,
+    variant,
+    topic,
+    bias,
+    view
+) {
     const url = window.location.href;
-    const route = url.split("/").pop().split("?")[0];
+    // console.log("url:", url);
+    let old_params = {};
+    let paramString = url.substring(url.indexOf("?") + 1);
+    let paramArray = paramString.split("&");
+    for (let i = 0; i < paramArray.length; i++) {
+        let param = paramArray[i].split("=");
+        old_params[param[0]] = param[1];
+    }
+    // console.log("PParams:", old_params);
+    let qid;
+    if (old_params.hasOwnProperty("qid")) {
+        UserStore.setFromQualtics(true);
+        qid = old_params["qid"];
+        UserStore.setQualtricsID(qid);
+    } else {
+        if (localStorage.hasOwnProperty("qid")) {
+            UserStore.setFromQualtics(true);
+            qid = localStorage.getItem("qid");
+            UserStore.setQualtricsID(qid);
+        } else {
+            UserStore.setFromQualtics(false);
+        }
+    }
+    if (old_params.hasOwnProperty("b")) {
+        SearchStore.setBias(old_params["b"], false);
+    }
+
+    if (old_params.hasOwnProperty("t")) {
+        SearchStore.setTopic(old_params["t"], false);
+    }
+    if (old_params.hasOwnProperty("vp")) {
+        SearchStore.setUserView(old_params["vp"], false);
+    }
+    // bias = old_params["b"] || localStorage.getItem("bias") || "";
+    // topic = old_params["t"] || localStorage.getItem("topic") || "";
+    // view = old_params["vp"] || localStorage.getItem("view") || "";
+
+    bias = localStorage.getItem("bias") || "na";
+    topic = localStorage.getItem("topic") || "na";
+    view = localStorage.getItem("view") || "na";
+    // console.log("BIAS", bias, "TOPIC:", topic, "VP", view);
+    // console.log("NEWEST URL:", url);
+    const route = url
+        .split("/")
+        .pop()
+        .split("?")[0];
+    let topicParam = topic === "na" ? "na" : topic.toLowerCase();
+    let biasParam = bias === "na" ? "na" : bias.toLowerCase();
+    let viewParam = view === "na" ? "na" : view.toLowerCase();
+
+    // console.log("BIASp", biasParam, "TOPIC:", topicParam, "VPs", viewParam);
+    if (
+        !biasTypeList.includes(biasParam.toLowerCase()) ||
+        !topicList.includes(topicParam.toLowerCase()) ||
+        !viewPointList.includes(viewParam.toLowerCase())
+    ) {
+        if (!biasTypeList.includes(biasParam.toLowerCase())) {
+            biasParam = "na";
+        }
+        if (!topicList.includes(topicParam.toLowerCase())) {
+            topicParam = "na";
+        }
+        if (!viewPointList.includes(viewParam.toLowerCase())) {
+            viewParam = "na";
+        }
+        console.error("URL PARAMS NOT LEGIT");
+    }
+
     let params =
         "q=" +
         query +
+        "&qid=" +
+        qid +
         "&v=" +
         vertical +
         "&p=" +
         page +
         "&provider=" +
-        provider;
+        provider +
+        "&t=" +
+        topicParam +
+        "&b=" +
+        biasParam +
+        "&vp=" +
+        viewParam;
     if (config.variantQueryParameter) {
         params += "&variant=" + variant;
     }
@@ -559,7 +674,7 @@ const _updateUrl = function (query, vertical, page, provider, variant) {
 /*
  * Update result metadata by refreshing bookmarks and excludes from the BookmarkStore
  */
-const _update_metadata = function () {
+const _update_metadata = function() {
     // const bookmarks = BookmarkStore.getBookmarks();
     // const excludes = BookmarkStore.getExcludes();
     // const bookmarkMap = {};
@@ -573,19 +688,19 @@ const _update_metadata = function () {
     // const annotationsMap = AnnotationStore.getAnnotations();
     // const ratingsMap = RatingStore.getRatings();
 
-    state.results = state.results.map((result) => {
-        // const newresult = result;
-        // const resultId = result.url ? result.url : result.id;
-        // newresult.metadata.bookmark = bookmarkMap[resultId];
-        // newresult.metadata.exclude = excludeMap[resultId];
-        // if (annotationsMap.hasOwnProperty(resultId)) {
-        //     newresult.metadata.annotations = annotationsMap[resultId];
-        // }
-        // if (ratingsMap.hasOwnProperty(resultId)) {
-        //     newresult.metadata.rating = ratingsMap[resultId];
-        // }
-        // return newresult;
-    });
+    // state.results = state.results.map((result) => {
+    // const newresult = result;
+    // const resultId = result.url ? result.url : result.id;
+    // newresult.metadata.bookmark = bookmarkMap[resultId];
+    // newresult.metadata.exclude = excludeMap[resultId];
+    // if (annotationsMap.hasOwnProperty(resultId)) {
+    //     newresult.metadata.annotations = annotationsMap[resultId];
+    // }
+    // if (ratingsMap.hasOwnProperty(resultId)) {
+    //     newresult.metadata.rating = ratingsMap[resultId];
+    // }
+    // return newresult;
+    // });
 
     SearchStore.emitChange();
 };
@@ -594,6 +709,17 @@ const _update_metadata = function () {
 
 if (Helpers.getURLParameter("q")) {
     _search();
+} else {
+    _updateUrl(
+        state.query,
+        state.vertical,
+        state.page,
+        state.provider,
+        state.variant,
+        state.topic,
+        state.bias,
+        state.view
+    );
 }
 
 export default SearchStore;

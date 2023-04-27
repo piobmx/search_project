@@ -21,9 +21,6 @@ const AccountStore = Object.assign(EventEmitter.prototype, {
     getGroupId() {
         return state.groupId;
     },
-    getUserTopic() {
-        return state.topic;
-    },
     getTask() {
         return state.task;
     },
@@ -37,15 +34,9 @@ const AccountStore = Object.assign(EventEmitter.prototype, {
     // WARNING: using the setter methods below violates flux architecture, and will not cause components to be updated
     // If changes need to be propagated from this store, event dispatch methods need to be added, and actions with a
     // dispatcher need to be used instead of setter methods.
-    setUserTopic(topic) {
-        state.topic = topic;
-        localStorage.setItem("user-topic", topic);
-        console.log('userID SET');
-    },
     setUserId(userId) {
         state.userId = userId;
         localStorage.setItem("user-id", userId);
-        console.log('userID SET');
     },
 
     setSessionId(sessionId) {
@@ -82,7 +73,6 @@ const AccountStore = Object.assign(EventEmitter.prototype, {
 // set userId and groupId if specified by url parameter
 const urlGroupId = Helpers.getURLParameter("groupId");
 if (urlGroupId) {
-    console.log('urlGroupID:', urlGroupId);
     if (urlGroupId !== state.groupId) {
         AccountStore.setUserId(Helpers.generateId());
     }
@@ -93,13 +83,11 @@ if (urlGroupId) {
 const urlUserId = Helpers.getURLParameter("userId");
 if (urlUserId) {
     AccountStore.setUserId(urlUserId);
-    console.log('urlUserId set:', this.state.userId);
 }
 
 // initialize random userId, sessionId, and groupId if they are not set by localstorage or url parameter
 if (!state.userId) {
     AccountStore.setUserId(Helpers.generateId());
-    console.log('userId Generated:', this.state.userId);
 }
 if (!state.sessionId) {
     const id = Helpers.generateId();
