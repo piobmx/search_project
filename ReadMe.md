@@ -17,7 +17,7 @@ docker run  -p 3000:3000  --network seppnetwork --rm -d --name=back -v $PATH_TO_
 
 and run this for the client image:
 ```
-docker run -p 80:8080 -p 443:443 --rm -d --name=front --network=seppnetwork {$YOUR_CLIENT_IMAGE}
+docker run -p 80:8080 -p 443:443 --rm -d --name=front {$YOUR_CLIENT_IMAGE}
 ```
 
 
