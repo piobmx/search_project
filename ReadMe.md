@@ -1,4 +1,5 @@
 # Set-up Environment
+
 1. Follow the step 1 and step 3 in the following manual to install Elasticsearch and logstash (not need to install others): https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elastic-stack-on-ubuntu-18-04
 
 2. To run logstash we need to add its path to environment variable: (1) install vim, (2) edit .bashrc file by command: vim ~/.bashrc, (3) Add "export PATH="/usr/share/logstash/bin/:$PATH" to the end of the file, (4) Run command: "source ~/.bashrc"
@@ -6,6 +7,17 @@
 3. Then follow the tutorial to indexing a csv file: https://www.youtube.com/watch?v=_kqunm8w7GI&t=2s
 
 4. Make sure that PostgreSQL is installed
+
+---
+Note that Docker can be used to deployed the server and client sides of this project. For both the server and client implementations, first you should go to the directory and use `docker build` command to generate a Docker image based on the `Dockerfile`. 
+Then, in your server where you want to deploy SEPP, run this command for the `/server`  
+```
+docker run  -p 3000:3000  --network seppnetwork --rm -d --name=back -v $PATH_TO_YOUR_DATABASE/sepp.db:/usr/src/app/loguiDB/sepp.db {$YOUR_SERVER_IMAGE}
+``` 
+
+and run this for the client image:
+```docker run -p 80:8080 -p 443:443 --rm -d --name=front --network=seppnetwork {$YOUR_CLIENT_IMAGE}```
+
 
 # SEPP Server
 These instructions are for Ubuntu Linux. The steps can be adapted for all major platforms.
